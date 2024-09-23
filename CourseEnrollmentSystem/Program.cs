@@ -363,6 +363,32 @@ namespace CourseEnrollmentSystem
                 }
             }
         }
+        static void LoadAdminFromFile()
+        {
+            try
+            {
+                if (File.Exists(filePathAdmin))
+                {
+                    using (StreamReader reader = new StreamReader(filePathAdmin))
+                    {
+                        string line;
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            var parts = line.Split('|');
+                            if (parts.Length == 4)
+                            {
+                                Admin.Add((int.Parse(parts[0].Trim()), parts[1].Trim(), parts[2].Trim(), parts[3].Trim()));
+                            }
+                        }
+                    }
+                    Console.WriteLine("Admins loaded from file successfully.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading from file: {ex.Message}");
+            }
+        }
 
 
 
