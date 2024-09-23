@@ -4,10 +4,17 @@ namespace CourseEnrollmentSystem
 {
     internal class Program
     {
+        static Dictionary<string, HashSet<string>> Courses = new Dictionary<string, HashSet<string>>();
+        static Dictionary<string, int> courseCapacities = new Dictionary<string, int>();
 
         static List<(int AID, string Aname, string email, string password)> Admin = new List<(int AID, string Aname, string email, string password)>();
 
+
+
+
         static string filePathAdmin = "C:\\Users\\Lenovo\\source\\repos\\testCourse\\AdminsFile.txt";
+        static string filePathcourses = "C:\\Users\\Lenovo\\source\\repos\\testCourse\\courses.txt";
+
         static void Main(string[] args)
         {
             bool ExitFlag = false;
@@ -16,7 +23,7 @@ namespace CourseEnrollmentSystem
             try
             {
                 //LoadBooksFromFile();
-               // LoadCategoriesFile();
+                // LoadCategoriesFile();
             }
             catch (Exception ex)
             {
@@ -30,7 +37,7 @@ namespace CourseEnrollmentSystem
                 Console.Clear();
                 Console.WriteLine("======================================================= ");
                 Console.WriteLine("      Welcome to the Course Enrollment System    ");
-               Console.WriteLine("========================================================\n");
+                Console.WriteLine("========================================================\n");
 
                 Console.WriteLine("Please choose an option from the menu below:");
                 Console.WriteLine("----------------------------------------");
@@ -60,7 +67,7 @@ namespace CourseEnrollmentSystem
 
                         case "C":
                             Console.WriteLine("\nSaving data and exiting the system...");
-                           // SaveBooksToFile();
+                            // SaveBooksToFile();
                             ExitFlag = true;
                             break;
 
@@ -318,7 +325,7 @@ namespace CourseEnrollmentSystem
                     case "1":
                         Console.WriteLine("Add a new course");
                         Console.WriteLine("-----------------------------------");
-                        //AddNewcourse();
+                        AddNewcourse();
                         break;
                     case "2":
                         Console.WriteLine("Add a new Students");
@@ -409,7 +416,121 @@ namespace CourseEnrollmentSystem
         }
 
 
+        //************** Function ******************************************
 
+        static void AddNewcourse()
+
+        {
+
+            Console.WriteLine("Enter course code :");
+            string courseCode = Console.ReadLine();
+
+
+            Console.WriteLine("Enter course capacity :");
+            int CourseCapacity = int.Parse(Console.ReadLine());
+
+
+
+            if (Courses.ContainsKey(courseCode))
+            {
+                Console.WriteLine($"Course {courseCode} already exists");
+            }
+            else
+            {
+                Courses[courseCode] = new HashSet<string>();
+                courseCapacities[courseCode] = CourseCapacity;
+                Console.WriteLine($"Course {courseCode} added with a capacity of {CourseCapacity}.");
+
+            }
+            SaveCoursesToFile();
+
+        }
+
+        static void SaveCoursesToFile()
+        {
+            using (StreamWriter writer = new StreamWriter(filePathcourses))
+            {
+                foreach (var course in Courses)
+                {
+                    string courseCode = course.Key;
+                    int capacity = courseCapacities[courseCode];
+                    writer.WriteLine($"{courseCode},{capacity}");
+                }
+            }
+            Console.WriteLine("Courses saved to file.");
+        }
+
+        static void LoadCoursesFromFile()
+        {
+            if (File.Exists(filePathcourses))
+            {
+                using (StreamReader reader = new StreamReader(filePathcourses))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        string[] data = line.Split(',');
+                        if (data.Length == 2)
+                        {
+                            string courseCode = data[0];
+                            int capacity = int.Parse(data[1]);
+
+                            Courses[courseCode] = new HashSet<string>();
+                            courseCapacities[courseCode] = capacity;
+                        }
+                    }
+                }
+                Console.WriteLine("Courses loaded from file.");
+            }
+            else
+            {
+                Console.WriteLine("No course data file found.");
+            }
+        }
+
+
+        static void EnrollStudent()
+        {
+
+            Console.WriteLine("Enter the student's Name:");
+            string studentName = Console.ReadLine();
+
+
+            Console.WriteLine("Enter the course code:");
+            string courseCode = Console.ReadLine();
+
+            //  course exists
+            if (Courses.ContainsKey(courseCode))
+            {
+                var enrollStudents = Courses[courseCode];
+
+                // student is already enrolled
+                if (enrollStudents.Contains(studentName))
+                {
+
+                    Console.WriteLine($"{studentName} is already enrolled in {courseCode}.");
+
+                }
+                // course is full
+                else if (enrollStudents.Count >= courseCapacities[courseCode])
+                {
+
+                    waitList.Add((studentName, courseCode));
+                    Console.WriteLine($"{studentName} has been added to the waitlist for {courseCode}.");
+                }
+                // Enroll the student in the course
+                else
+                {
+                    enrollStudents.Add(studentName);
+
+                    Console.WriteLine($"{studentName} has been enrolled in {courseCode}.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Course {courseCode} does not exist.");
+            }
+        }
 
     }
 }
