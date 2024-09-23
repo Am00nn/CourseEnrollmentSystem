@@ -347,7 +347,7 @@ namespace CourseEnrollmentSystem
                     case "5":
                         Console.WriteLine(" Display all students in a course:");
                         Console.WriteLine("-----------------------------------");
-                        // DisplayAllStudentsCourse();
+                         DisplayAllStudentsCourse();
                         break;
                     case "6":
                         Console.WriteLine("Display all courses and their students:");
@@ -573,6 +573,36 @@ namespace CourseEnrollmentSystem
                 else
                 {
                     Console.WriteLine($"{studentName} is not enrolled in {courseCode}.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Course {courseCode} does not exist.");
+            }
+        }
+
+        static void DisplayAllStudentsCourse()
+        {
+            Console.WriteLine("Enter the course code:");
+            string courseCode = Console.ReadLine();
+
+
+            if (Courses.ContainsKey(courseCode))
+            {
+                var Students = Courses[courseCode];
+
+
+                if (Students.Count > 0)
+                {
+                    Console.WriteLine($"Students enrolled in {courseCode}:");
+                    foreach (var student in Students)
+                    {
+                        Console.WriteLine(student);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"No students are enrolled in {courseCode}.");
                 }
             }
             else
