@@ -290,6 +290,81 @@ namespace CourseEnrollmentSystem
                 }
             }
         }
+        static void AdminMenu(int adminID)
+        {
+            bool running = true;
+            while (running)
+            {
+                Console.Clear();
+                Console.WriteLine("===================================");
+                Console.WriteLine("          Library Admin Menu       ");
+                Console.WriteLine("===================================");
+                Console.WriteLine("1. Add a new course");
+                Console.WriteLine("2. Add a new Students");
+                Console.WriteLine("3. Remove a student from a course:");
+                Console.WriteLine("4. Remove Course ");
+                Console.WriteLine("5. Display all students in a course:");
+                Console.WriteLine("6. Display all courses and their students:");
+                Console.WriteLine("7. Log Out");
+                Console.WriteLine("===================================");
+                Console.Write("Choose an option (1-7): ");
+                var option = Console.ReadLine();
+
+
+                Console.WriteLine("\n-----------------------------------\n");
+
+                switch (option)
+                {
+                    case "1":
+                        Console.WriteLine("Add a new course");
+                        Console.WriteLine("-----------------------------------");
+                        //AddNewcourse();
+                        break;
+                    case "2":
+                        Console.WriteLine("Add a new Students");
+                        Console.WriteLine("-----------------------------------");
+                        // AddNewStudents(); 
+                        break;
+                    case "3":
+                        Console.WriteLine(" Remove a student from a course");
+                        Console.WriteLine("-----------------------------------");
+                        //RemoveStudentFromCourse();
+                        break;
+                    case "4":
+                        Console.WriteLine("Remove Course ");
+                        Console.WriteLine("-----------------------------------");
+                        // RemoveCourse();
+                        break;
+                    case "5":
+                        Console.WriteLine(" Display all students in a course:");
+                        Console.WriteLine("-----------------------------------");
+                        // DisplayAllStudentsCourse();
+                        break;
+                    case "6":
+                        Console.WriteLine("Display all courses and their students:");
+                        Console.WriteLine("-----------------------------------");
+                        // DisplayAllCoursesAndTheirStudents();
+                        break;
+                    case "7":
+                        Console.WriteLine("Saving changes and logging out...");
+                        // SaveToFile();
+                        running = false;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid option. Please choose a valid option (1-7).");
+                        break;
+                }
+
+                if (running)
+                {
+
+                    Console.WriteLine("\nPress any key to return to the menu...");
+                    Console.ReadKey();
+                }
+            }
+        }
+
+
 
 
     }
