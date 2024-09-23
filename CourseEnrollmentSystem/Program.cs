@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 
 namespace CourseEnrollmentSystem
 {
@@ -335,7 +336,8 @@ namespace CourseEnrollmentSystem
                     case "3":
                         Console.WriteLine(" Remove a student from a course");
                         Console.WriteLine("-----------------------------------");
-                        //RemoveStudentFromCourse();
+                        RemoveStudentFromCourse();
+
                         break;
                     case "4":
                         Console.WriteLine("Remove Course ");
@@ -489,41 +491,88 @@ namespace CourseEnrollmentSystem
         }
 
 
-        static void EnrollStudent()
-        {
+        //static void EnrollStudent()
+        //{
+        //    //need to add how many student 
+        //    Console.WriteLine("Enter the student's Name:");
+        //    string studentName = Console.ReadLine();
 
+
+        //    Console.WriteLine("Enter the course code:");
+        //    string courseCode = Console.ReadLine();
+
+        //    //  course exists
+        //    if (Courses.ContainsKey(courseCode))
+        //    {
+        //        var enrollStudents = Courses[courseCode];
+
+        //        // student is already enrolled
+        //        if (enrollStudents.Contains(studentName))
+        //        {
+
+        //            Console.WriteLine($"{studentName} is already enrolled in {courseCode}.");
+
+        //        }
+        //        // course is full
+        //        else if (enrollStudents.Count >= courseCapacities[courseCode])
+        //        {
+
+        //            waitList.Add((studentName, courseCode));
+        //            Console.WriteLine($"{studentName} has been added to the waitlist for {courseCode}.");
+        //        }
+        //        // Enroll the student in the course
+        //        else
+        //        {
+        //            enrollStudents.Add(studentName);
+
+        //            Console.WriteLine($"{studentName} has been enrolled in {courseCode}.");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine($"Course {courseCode} does not exist.");
+        //    }
+        //}
+
+        static void RemoveStudentFromCourse()
+        {
             Console.WriteLine("Enter the student's Name:");
             string studentName = Console.ReadLine();
-
 
             Console.WriteLine("Enter the course code:");
             string courseCode = Console.ReadLine();
 
-            //  course exists
+
             if (Courses.ContainsKey(courseCode))
             {
-                var enrollStudents = Courses[courseCode];
+                var Students = Courses[courseCode];
 
-                // student is already enrolled
-                if (enrollStudents.Contains(studentName))
+
+                if (Students.Contains(studentName))
                 {
+                    Students.Remove(studentName);
+                    Console.WriteLine($"{studentName} has been removed from {courseCode}.");
 
-                    Console.WriteLine($"{studentName} is already enrolled in {courseCode}.");
 
+                    for (int i = 0; i < waitList.Count; i++)
+                    {
+                        if (waitList[i].courseCode == courseCode)
+                        {
+
+                            string waitStudentName = waitList[i].studentName;
+                            Students.Add(waitStudentName);
+
+
+                            waitList.RemoveAt(i);
+
+                            Console.WriteLine($"{waitStudentName} has been enrolled from the waitlist into {courseCode}.");
+                            break;
+                        }
+                    }
                 }
-                // course is full
-                else if (enrollStudents.Count >= courseCapacities[courseCode])
-                {
-
-                    waitList.Add((studentName, courseCode));
-                    Console.WriteLine($"{studentName} has been added to the waitlist for {courseCode}.");
-                }
-                // Enroll the student in the course
                 else
                 {
-                    enrollStudents.Add(studentName);
-
-                    Console.WriteLine($"{studentName} has been enrolled in {courseCode}.");
+                    Console.WriteLine($"{studentName} is not enrolled in {courseCode}.");
                 }
             }
             else
