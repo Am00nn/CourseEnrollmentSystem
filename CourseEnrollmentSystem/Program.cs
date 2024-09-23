@@ -389,6 +389,24 @@ namespace CourseEnrollmentSystem
                 Console.WriteLine($"Error loading from file: {ex.Message}");
             }
         }
+        static void SaveAdminToFile()
+        {
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(filePathAdmin))
+                {
+                    foreach (var admins in Admin)
+                    {
+                        writer.WriteLine($"{admins.AID}|{admins.Aname}|{admins.email}|{admins.password}");
+                    }
+                }
+                Console.WriteLine("Admin saved to file successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving to file: {ex.Message}");
+            }
+        }
 
 
 
