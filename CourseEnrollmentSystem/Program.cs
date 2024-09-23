@@ -6,7 +6,7 @@ namespace CourseEnrollmentSystem
     {
         static Dictionary<string, HashSet<string>> Courses = new Dictionary<string, HashSet<string>>();
         static Dictionary<string, int> courseCapacities = new Dictionary<string, int>();
-
+        static List<(string studentName, string courseCode)> waitList = new List<(string, string)>();
         static List<(int AID, string Aname, string email, string password)> Admin = new List<(int AID, string Aname, string email, string password)>();
 
 
