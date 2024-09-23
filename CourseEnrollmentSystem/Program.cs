@@ -201,6 +201,95 @@ namespace CourseEnrollmentSystem
             AdminFunction();
 
         }
+        static string GetValidPassword()
+        {
+            string password;
+            while (true)
+            {
+                Console.WriteLine("Enter your password (at least 8 characters, include uppercase, lowercase, and a digit):");
+                password = Console.ReadLine();
+                if (password.Length >= 8 &&
+                    Regex.IsMatch(password, @"[A-Z]") &&
+                    Regex.IsMatch(password, @"[a-z]") &&
+                    Regex.IsMatch(password, @"[0-9]"))
+                {
+                    break;
+                }
+                Console.WriteLine("Password does not meet criteria. Try again.");
+            }
+            return password;
+        }
+        static string GetValidEmail()
+        {
+            string email;
+            while (true)
+            {
+                Console.WriteLine("Enter your email (must contain '@' and end with .com or .edu):");
+                email = Console.ReadLine();
+
+                if (!Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.(com|edu)$"))
+                {
+                    Console.WriteLine("Invalid email format. Try again.");
+                    continue;
+                }
+
+                bool emailExists = Admin.Any(a => a.email == email);
+
+                if (!emailExists)
+                {
+                    break;
+                }
+
+                Console.WriteLine("Duplicate email. Try again.");
+            }
+            return email;
+        }
+        static void LoginAdmin()
+        {
+
+            Console.WriteLine("Enter your email:");
+            string email = Console.ReadLine();
+
+            // Check if the email exists 
+            bool adminFound = false;
+            int foundAdmin = -1;
+
+            for (int i = 0; i < Admin.Count; i++)
+            {
+                if (Admin[i].email.Equals(email, StringComparison.OrdinalIgnoreCase))
+                {
+                    adminFound = true;
+                    foundAdmin = i;
+                    Console.WriteLine("\nEnter Admin's Password:");
+                    string password = Console.ReadLine();
+                    if (Admin[i].password == password)
+                    {
+                        AdminMenu(Admin[i].AID);
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Incorrect Admin's Password.");
+                        Console.WriteLine("\nPress Enter key to continue...");
+                        Console.ReadLine();
+                        return;
+                    }
+                }
+            }
+
+            if (!adminFound)
+            {
+                Console.WriteLine("Admin is not registered. Do you want to register? (yes / no)");
+                if (Console.ReadLine().ToLower() == "yes")
+                {
+                    RegisterAdmin();
+                }
+                else
+                {
+                    AdminFunction();
+                }
+            }
+        }
 
 
     }
