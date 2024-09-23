@@ -14,24 +14,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Lenovo\\source\\repos\\CourseEnrollmentSystem\\CourseEnrollmentSystem\\Program.cs",
               "RelativeDocumentMoniker": "CourseEnrollmentSystem\\Program.cs",
-              "ToolTip": "C:\\Users\\Lenovo\\source\\repos\\CourseEnrollmentSystem\\CourseEnrollmentSystem\\Program.cs",
-              "RelativeToolTip": "CourseEnrollmentSystem\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAVAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Lenovo\\source\\repos\\CourseEnrollmentSystem\\CourseEnrollmentSystem\\Program.cs*",
+              "RelativeToolTip": "CourseEnrollmentSystem\\Program.cs*",
+              "ViewState": "AgIAAC4AAAAAAAAAAAAgwDkAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-23T05:38:46.565Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
             }
           ]
         }
