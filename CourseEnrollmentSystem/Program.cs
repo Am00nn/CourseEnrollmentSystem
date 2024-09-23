@@ -148,6 +148,59 @@ namespace CourseEnrollmentSystem
             Console.Clear();
             Console.WriteLine("Returning to the main menu...");
         }
+        static void RegisterAdmin()
+        {
+            int AID = 1;
+
+
+            if (Admin.Count > 0)
+            {
+
+                AID = Admin[0].AID;
+
+
+                for (int i = 1; i < Admin.Count; i++)
+                {
+                    if (Admin[i].AID > AID)
+                    {
+                        AID = Admin[i].AID;
+                    }
+                }
+
+                AID++;
+            }
+
+            Console.WriteLine("Enter admin name:");
+            string adminName = Console.ReadLine();
+
+
+            bool nameExists = false;
+            for (int i = 0; i < Admin.Count; i++)
+            {
+                if (Admin[i].Aname == adminName)
+                {
+                    nameExists = true;
+                    break;
+                }
+            }
+
+            if (nameExists)
+            {
+                Console.WriteLine("Admin name already exists.");
+                return;
+            }
+
+
+            string email = GetValidEmail();
+            string password = GetValidPassword();
+
+
+            Admin.Add((AID, adminName, email, password));
+            Console.WriteLine("Admin registered successfully!");
+            SaveAdminToFile();
+            AdminFunction();
+
+        }
 
 
     }
