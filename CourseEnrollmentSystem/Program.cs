@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace CourseEnrollmentSystem
@@ -8,314 +9,30 @@ namespace CourseEnrollmentSystem
         static Dictionary<string, HashSet<string>> Courses = new Dictionary<string, HashSet<string>>();
         static Dictionary<string, int> courseCapacities = new Dictionary<string, int>();
         static List<(string studentName, string courseCode)> waitList = new List<(string, string)>();
-        static List<(int AID, string Aname, string email, string password)> Admin = new List<(int AID, string Aname, string email, string password)>();
 
-
-
-
-        static string filePathAdmin = "C:\\Users\\Lenovo\\source\\repos\\testCourse\\AdminsFile.txt";
-        static string filePathcourses = "C:\\Users\\Lenovo\\source\\repos\\testCourse\\courses.txt";
 
         static void Main(string[] args)
         {
-            bool ExitFlag = false;
-
-
-            try
-            {
-                //LoadBooksFromFile();
-                // LoadCategoriesFile();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error loading data from file: " + ex.Message);
-                return;
-            }
-
-            do
-            {
-
-                Console.Clear();
-                Console.WriteLine("======================================================= ");
-                Console.WriteLine("      Welcome to the Course Enrollment System    ");
-                Console.WriteLine("========================================================\n");
-
-                Console.WriteLine("Please choose an option from the menu below:");
-                Console.WriteLine("----------------------------------------");
-                Console.WriteLine(" A - Admin");
-                Console.WriteLine(" B - Student");
-                Console.WriteLine(" C - Save and Exit");
-                Console.WriteLine("----------------------------------------");
-                Console.Write("\nYour choice: ");
-
-                string choice = Console.ReadLine().ToUpper();
-
-                try
-                {
-                    switch (choice)
-                    {
-                        case "A":
-                            Console.Clear();
-                            Console.WriteLine("Admin Menu");
-                            AdminFunction();
-                            break;
-
-                        case "B":
-                            Console.Clear();
-                            Console.WriteLine("Students Menu");
-                            //UserFunction();
-                            break;
-
-                        case "C":
-                            Console.WriteLine("\nSaving data and exiting the system...");
-                            // SaveBooksToFile();
-                            ExitFlag = true;
-                            break;
-
-                        default:
-                            Console.WriteLine("\nInvalid choice. Please select a valid option.");
-                            break;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("An error occurred while processing your choice: " + ex.Message);
-                }
-
-                if (!ExitFlag)
-                {
-                    Console.WriteLine("\nPress any key to return to the menu...");
-                    Console.ReadKey();
-                }
-
-            } while (!ExitFlag);
-
-
-            Console.Clear();
-            Console.WriteLine("Thank you for using the Library System. Goodbye!");
-        }
-
-
-
-        //***************** Admin function *********************************
-        static void AdminFunction()
-        {
-            bool ExitFlag = false;
-
-
-            while (!ExitFlag)
-            {
-                Console.Clear();
-                Console.WriteLine("=====================================");
-                Console.WriteLine("          Welcome, Admin!            ");
-                Console.WriteLine("=====================================\n");
-
-                Console.WriteLine("Please select an operation from the menu below:");
-                Console.WriteLine("-------------------------------------");
-                Console.WriteLine(" A - Admin Registration");
-                Console.WriteLine(" B - Admin Login");
-                Console.WriteLine(" C - Exit to Main Menu");
-                Console.WriteLine("-------------------------------------");
-                Console.Write("\nYour choice: ");
-
-                string choice = Console.ReadLine().ToUpper();
-
-                switch (choice)
-                {
-                    case "A":
-                        Console.Clear();
-                        Console.WriteLine("Admin Registration\n");
-                        RegisterAdmin();
-                        break;
-
-                    case "B":
-                        Console.Clear();
-                        Console.WriteLine("Admin Login\n");
-                        LoadAdminFromFile();
-                        LoginAdmin();
-                        break;
-
-                    case "C":
-                        ExitFlag = true;
-                        Console.WriteLine("\nExiting Admin Menu...");
-                        break;
-
-                    default:
-                        Console.WriteLine("\nInvalid option. Please choose a valid action.");
-                        break;
-                }
-
-
-                if (!ExitFlag)
-                {
-                    Console.WriteLine("\nPress any key to return to the Admin Menu...");
-                    Console.ReadKey();
-                }
-            }
-
-            Console.Clear();
-            Console.WriteLine("Returning to the main menu...");
-        }
-        static void RegisterAdmin()
-        {
-            int AID = 1;
-
-
-            if (Admin.Count > 0)
-            {
-
-                AID = Admin[0].AID;
-
-
-                for (int i = 1; i < Admin.Count; i++)
-                {
-                    if (Admin[i].AID > AID)
-                    {
-                        AID = Admin[i].AID;
-                    }
-                }
-
-                AID++;
-            }
-
-            Console.WriteLine("Enter admin name:");
-            string adminName = Console.ReadLine();
-
-
-            bool nameExists = false;
-            for (int i = 0; i < Admin.Count; i++)
-            {
-                if (Admin[i].Aname == adminName)
-                {
-                    nameExists = true;
-                    break;
-                }
-            }
-
-            if (nameExists)
-            {
-                Console.WriteLine("Admin name already exists.");
-                return;
-            }
-
-
-            string email = GetValidEmail();
-            string password = GetValidPassword();
-
-
-            Admin.Add((AID, adminName, email, password));
-            Console.WriteLine("Admin registered successfully!");
-            SaveAdminToFile();
-            AdminFunction();
-
-        }
-        static string GetValidPassword()
-        {
-            string password;
-            while (true)
-            {
-                Console.WriteLine("Enter your password (at least 8 characters, include uppercase, lowercase, and a digit):");
-                password = Console.ReadLine();
-                if (password.Length >= 8 &&
-                    Regex.IsMatch(password, @"[A-Z]") &&
-                    Regex.IsMatch(password, @"[a-z]") &&
-                    Regex.IsMatch(password, @"[0-9]"))
-                {
-                    break;
-                }
-                Console.WriteLine("Password does not meet criteria. Try again.");
-            }
-            return password;
-        }
-        static string GetValidEmail()
-        {
-            string email;
-            while (true)
-            {
-                Console.WriteLine("Enter your email (must contain '@' and end with .com or .edu):");
-                email = Console.ReadLine();
-
-                if (!Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.(com|edu)$"))
-                {
-                    Console.WriteLine("Invalid email format. Try again.");
-                    continue;
-                }
-
-                bool emailExists = Admin.Any(a => a.email == email);
-
-                if (!emailExists)
-                {
-                    break;
-                }
-
-                Console.WriteLine("Duplicate email. Try again.");
-            }
-            return email;
-        }
-        static void LoginAdmin()
-        {
-
-            Console.WriteLine("Enter your email:");
-            string email = Console.ReadLine();
-
-            // Check if the email exists 
-            bool adminFound = false;
-            int foundAdmin = -1;
-
-            for (int i = 0; i < Admin.Count; i++)
-            {
-                if (Admin[i].email.Equals(email, StringComparison.OrdinalIgnoreCase))
-                {
-                    adminFound = true;
-                    foundAdmin = i;
-                    Console.WriteLine("\nEnter Admin's Password:");
-                    string password = Console.ReadLine();
-                    if (Admin[i].password == password)
-                    {
-                        AdminMenu(Admin[i].AID);
-                        return;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Incorrect Admin's Password.");
-                        Console.WriteLine("\nPress Enter key to continue...");
-                        Console.ReadLine();
-                        return;
-                    }
-                }
-            }
-
-            if (!adminFound)
-            {
-                Console.WriteLine("Admin is not registered. Do you want to register? (yes / no)");
-                if (Console.ReadLine().ToLower() == "yes")
-                {
-                    RegisterAdmin();
-                }
-                else
-                {
-                    AdminFunction();
-                }
-            }
-        }
-        static void AdminMenu(int adminID)
-        {
+            InitializeStartupData();
             bool running = true;
             while (running)
             {
                 Console.Clear();
                 Console.WriteLine("===================================");
-                Console.WriteLine("          Library Admin Menu       ");
+                Console.WriteLine("    Course Enrollment System       ");
                 Console.WriteLine("===================================");
                 Console.WriteLine("1. Add a new course");
-                Console.WriteLine("2. Add a new Students");
+                Console.WriteLine("2. Enroll a student in a course:");
                 Console.WriteLine("3. Remove a student from a course:");
                 Console.WriteLine("4. Remove Course ");
                 Console.WriteLine("5. Display all students in a course:");
                 Console.WriteLine("6. Display all courses and their students:");
-                Console.WriteLine("7. Log Out");
+                Console.WriteLine("7. Find courses with common students");
+                Console.WriteLine("8. Withdraw a Student from All Courses:");
+                Console.WriteLine("9. Viwe waitList:");
+                Console.WriteLine("10. Log Out");
                 Console.WriteLine("===================================");
-                Console.Write("Choose an option (1-7): ");
+                Console.Write("Choose an option (1-8): ");
                 var option = Console.ReadLine();
 
 
@@ -326,37 +43,62 @@ namespace CourseEnrollmentSystem
                     case "1":
                         Console.WriteLine("Add a new course");
                         Console.WriteLine("-----------------------------------");
+                        InitializeStartupData();
+                        DisplayAllCoursesAndTheirStudents();
                         AddNewcourse();
                         break;
                     case "2":
-                        Console.WriteLine("Add a new Students");
+                        Console.WriteLine("Enroll a student in a course");
                         Console.WriteLine("-----------------------------------");
-                        // AddNewStudents(); 
+                        DisplayAllCoursesAndTheirStudents();
+                        EnrollStudent();
                         break;
                     case "3":
                         Console.WriteLine(" Remove a student from a course");
                         Console.WriteLine("-----------------------------------");
+                        DisplayAllCoursesAndTheirStudents();
                         RemoveStudentFromCourse();
 
                         break;
                     case "4":
                         Console.WriteLine("Remove Course ");
                         Console.WriteLine("-----------------------------------");
-                        // RemoveCourse();
+                        DisplayAllCoursesAndTheirStudents();
+                        RemoveCourse();
                         break;
                     case "5":
                         Console.WriteLine(" Display all students in a course:");
                         Console.WriteLine("-----------------------------------");
-                         DisplayAllStudentsCourse();
+                        DisplayAllStudentsCourse();
                         break;
                     case "6":
                         Console.WriteLine("Display all courses and their students:");
                         Console.WriteLine("-----------------------------------");
-                        // DisplayAllCoursesAndTheirStudents();
+                        DisplayAllCoursesAndTheirStudents();
                         break;
+
                     case "7":
-                        Console.WriteLine("Saving changes and logging out...");
-                        // SaveToFile();
+                        Console.WriteLine("Find courses with common students");
+                        Console.WriteLine("-----------------------------------");
+                        DisplayAllCoursesAndTheirStudents();
+                        FindCoursesWithCommonStudents();
+                        break;
+                    case "8":
+                        Console.WriteLine("Withdraw a Student from All Courses");
+                        Console.WriteLine("-----------------------------------");
+                        WithdrawStudent();
+                        break;
+
+
+
+                    case "9":
+                        Console.WriteLine("viwe WaitList ");
+                        Console.WriteLine("-----------------------------------");
+                        ViweWaitList();
+                        break;
+                    case "10":
+                        Console.WriteLine("logging out...");
+
                         running = false;
                         break;
                     default:
@@ -372,60 +114,36 @@ namespace CourseEnrollmentSystem
                 }
             }
         }
-        static void LoadAdminFromFile()
+
+        static void InitializeStartupData()
         {
-            try
-            {
-                if (File.Exists(filePathAdmin))
-                {
-                    using (StreamReader reader = new StreamReader(filePathAdmin))
-                    {
-                        string line;
-                        while ((line = reader.ReadLine()) != null)
-                        {
-                            var parts = line.Split('|');
-                            if (parts.Length == 4)
-                            {
-                                Admin.Add((int.Parse(parts[0].Trim()), parts[1].Trim(), parts[2].Trim(), parts[3].Trim()));
-                            }
-                        }
-                    }
-                    Console.WriteLine("Admins loaded from file successfully.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error loading from file: {ex.Message}");
-            }
+            // Example data: Courses and their enrolled students (cross-over students)
+            Courses["CS101"] = new HashSet<string> { "Alice", "Bob", "Charlie" };   // CS101 has Alice, Bob, Charlie
+            Courses["MATH202"] = new HashSet<string> { "David", "Eva", "Bob" };     // MATH202 has David, Eva, and Bob (cross-over with CS101)
+            Courses["ENG303"] = new HashSet<string> { "Frank", "Grace", "Charlie" };// ENG303 has Frank, Grace, and Charlie (cross-over with CS101)
+            Courses["BIO404"] = new HashSet<string> { "Ivy", "Jack", "David" };     // BIO404 has Ivy, Jack, and David (cross-over with MATH202)
+                                                                                    // Set course capacities (varying)
+            courseCapacities["CS101"] = 3;  // CS101 capacity of 3 (currently full)
+            courseCapacities["MATH202"] = 5; // MATH202 capacity of 5 (can accept more students)
+            courseCapacities["ENG303"] = 3;  // ENG303 capacity of 3 (currently full)
+            courseCapacities["BIO404"] = 4;  // BIO404 capacity of 4 (can accept more students)
+                                             // Waitlist for courses (students waiting to enroll in full courses)
+            waitList.Add(("Helen", "CS101"));   // Helen waiting for CS101
+            waitList.Add(("Jack", "ENG303"));   // Jack waiting for ENG303
+            waitList.Add(("Alice", "BIO404"));  // Alice waiting for BIO404
+            waitList.Add(("Eva", "ENG303"));    // Eva waiting for ENG303
+            waitList.Add(("karim", "MATH202"));    // Eva waiting for ENG303
+            Console.WriteLine("Startup data initialized.");
         }
-        static void SaveAdminToFile()
-        {
-            try
-            {
-                using (StreamWriter writer = new StreamWriter(filePathAdmin))
-                {
-                    foreach (var admins in Admin)
-                    {
-                        writer.WriteLine($"{admins.AID}|{admins.Aname}|{admins.email}|{admins.password}");
-                    }
-                }
-                Console.WriteLine("Admin saved to file successfully.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error saving to file: {ex.Message}");
-            }
-        }
-
-
-        //************** Function ******************************************
-
         static void AddNewcourse()
 
         {
-
+            if (Courses.Count == 0)
+            {
+                InitializeStartupData();
+            }
             Console.WriteLine("Enter course code :");
-            string courseCode = Console.ReadLine();
+            string courseCode = Console.ReadLine().ToUpper();
 
 
             Console.WriteLine("Enter course capacity :");
@@ -444,95 +162,52 @@ namespace CourseEnrollmentSystem
                 Console.WriteLine($"Course {courseCode} added with a capacity of {CourseCapacity}.");
 
             }
-            SaveCoursesToFile();
+
 
         }
 
-        static void SaveCoursesToFile()
+        static void EnrollStudent()
         {
-            using (StreamWriter writer = new StreamWriter(filePathcourses))
-            {
-                foreach (var course in Courses)
-                {
-                    string courseCode = course.Key;
-                    int capacity = courseCapacities[courseCode];
-                    writer.WriteLine($"{courseCode},{capacity}");
-                }
-            }
-            Console.WriteLine("Courses saved to file.");
-        }
 
-        static void LoadCoursesFromFile()
-        {
-            if (File.Exists(filePathcourses))
-            {
-                using (StreamReader reader = new StreamReader(filePathcourses))
-                {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        string[] data = line.Split(',');
-                        if (data.Length == 2)
-                        {
-                            string courseCode = data[0];
-                            int capacity = int.Parse(data[1]);
+            Console.WriteLine("Enter the student's Name:");
+            string studentName = Console.ReadLine().ToUpper();
 
-                            Courses[courseCode] = new HashSet<string>();
-                            courseCapacities[courseCode] = capacity;
-                        }
-                    }
+
+            Console.WriteLine("Enter the course code:");
+            string courseCode = Console.ReadLine().ToUpper();
+
+
+            if (Courses.ContainsKey(courseCode))
+            {
+                var StudentInCourse = Courses[courseCode];
+
+
+                if (StudentInCourse.Contains(studentName))
+                {
+
+                    Console.WriteLine($"{studentName} is already enrolled in {courseCode}.");
+
                 }
-                Console.WriteLine("Courses loaded from file.");
+
+                else if (StudentInCourse.Count >= courseCapacities[courseCode])
+                {
+
+                    waitList.Add((studentName, courseCode));
+                    Console.WriteLine($"{studentName} has been added to the waitlist for {courseCode}.");
+                }
+
+                else
+                {
+                    StudentInCourse.Add(studentName);
+
+                    Console.WriteLine($"{studentName} has been enrolled in {courseCode}.");
+                }
             }
             else
             {
-                Console.WriteLine("No course data file found.");
+                Console.WriteLine($"Course {courseCode} does not exist.");
             }
         }
-
-
-        //static void EnrollStudent()
-        //{
-        //    //need to add how many student 
-        //    Console.WriteLine("Enter the student's Name:");
-        //    string studentName = Console.ReadLine();
-
-
-        //    Console.WriteLine("Enter the course code:");
-        //    string courseCode = Console.ReadLine();
-
-        //    //  course exists
-        //    if (Courses.ContainsKey(courseCode))
-        //    {
-        //        var enrollStudents = Courses[courseCode];
-
-        //        // student is already enrolled
-        //        if (enrollStudents.Contains(studentName))
-        //        {
-
-        //            Console.WriteLine($"{studentName} is already enrolled in {courseCode}.");
-
-        //        }
-        //        // course is full
-        //        else if (enrollStudents.Count >= courseCapacities[courseCode])
-        //        {
-
-        //            waitList.Add((studentName, courseCode));
-        //            Console.WriteLine($"{studentName} has been added to the waitlist for {courseCode}.");
-        //        }
-        //        // Enroll the student in the course
-        //        else
-        //        {
-        //            enrollStudents.Add(studentName);
-
-        //            Console.WriteLine($"{studentName} has been enrolled in {courseCode}.");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine($"Course {courseCode} does not exist.");
-        //    }
-        //}
 
         static void RemoveStudentFromCourse()
         {
@@ -540,7 +215,7 @@ namespace CourseEnrollmentSystem
             string studentName = Console.ReadLine();
 
             Console.WriteLine("Enter the course code:");
-            string courseCode = Console.ReadLine();
+            string courseCode = Console.ReadLine().ToUpper();
 
 
             if (Courses.ContainsKey(courseCode))
@@ -584,7 +259,7 @@ namespace CourseEnrollmentSystem
         static void DisplayAllStudentsCourse()
         {
             Console.WriteLine("Enter the course code:");
-            string courseCode = Console.ReadLine();
+            string courseCode = Console.ReadLine().ToUpper();
 
 
             if (Courses.ContainsKey(courseCode))
@@ -611,5 +286,165 @@ namespace CourseEnrollmentSystem
             }
         }
 
+        static void RemoveCourse()
+        {
+            Console.WriteLine("Enter the course code to you want remove:");
+            string courseCode = Console.ReadLine().ToUpper();
+
+            if (Courses.ContainsKey(courseCode))
+            {
+
+                if (Courses[courseCode].Count == 0)
+                {
+
+                    Courses.Remove(courseCode);
+                    courseCapacities.Remove(courseCode);
+                    Console.WriteLine($"Course {courseCode} has been removed.");
+                }
+                else
+                {
+                    Console.WriteLine($"Course {courseCode} cannot be removed because students are enrolled.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Course {courseCode} does not exist.");
+            }
+        }
+
+        static void DisplayAllCoursesAndTheirStudents()
+        {
+            Console.WriteLine("========================================");
+            Console.WriteLine("      Courses and their Enrolled Students ");
+            Console.WriteLine("========================================\n");
+
+            foreach (var course in Courses)
+            {
+                string courseCode = course.Key;
+                var studentsInCourse = course.Value;
+
+                Console.WriteLine($"Course Code: {courseCode}");
+                Console.WriteLine("----------------------------------------");
+
+                if (studentsInCourse.Count > 0)
+                {
+                    Console.WriteLine(" Enrolled Students:");
+                    foreach (var student in studentsInCourse)
+                    {
+                        Console.WriteLine($"* {student}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine(" No Students Enrolled.");
+                }
+
+
+                Console.WriteLine();
+            }
+
+            Console.WriteLine("========================================");
+        }
+        static void ViweWaitList()
+
+        {
+         
+            foreach (var n in waitList) 
+            {
+                Console.WriteLine(n);
+
+            }
+
+
+
+        }
+
+        static void WithdrawStudent()
+        {
+            Console.WriteLine("Enter the name of the student to withdraw::");
+            string studentName = Console.ReadLine();
+
+
+            bool flage = false;
+
+            List<string> coursesToWithdraw = new List<string>();
+            foreach (var course in Courses)
+            {
+                if (course.Value.Contains(studentName)) // Check if the student is enrolled in the course
+                {
+                    coursesToWithdraw.Add(course.Key); // Add course to the list
+                    flage = true;
+                }
+            }
+            foreach (var course in coursesToWithdraw)
+            {
+                Console.WriteLine(course);
+            }
+            foreach (var courseCode in coursesToWithdraw)
+            {
+                Courses[courseCode].Remove(studentName);
+                Console.WriteLine($"Student '{studentName}' has been withdrawn from course '{courseCode}'.");
+                // Check if the course now has space for students on the waitlist
+                var studentOnWaitlist = waitList.FirstOrDefault(w => w.courseCode == courseCode);
+                if (studentOnWaitlist != default)
+                {
+                    // Enroll the first student from the waitlist
+                    Courses[courseCode].Add(studentOnWaitlist.studentName);
+                    waitList.Remove(studentOnWaitlist);
+                    Console.WriteLine($"Student '{studentOnWaitlist.studentName}' from the waitlist has been enrolled in course '{courseCode}'.");
+                }
+            }
+
+
+            if (!flage)
+            {
+                Console.WriteLine($"{studentName} is not enrolled in any courses.");
+            }
+        }
+
+        static void FindCoursesWithCommonStudents()
+        {
+            Console.WriteLine("enter frist course : ");
+            string courseCode1 = Console.ReadLine();
+            Console.WriteLine("Enter second Course :");
+            string courseCode2 = Console.ReadLine();
+
+            if (Courses.ContainsKey(courseCode1) && Courses.ContainsKey(courseCode2))
+            {
+                List<string> CommenStudents = new List<string>();
+
+
+                foreach (var student in Courses[courseCode1])
+                {
+
+                    if (Courses[courseCode2].Contains(student))
+                    {
+                        CommenStudents.Add(student);
+                    }
+                }
+
+                if (CommenStudents.Count > 0)
+                {
+                    Console.WriteLine($"Common students in {courseCode1} and {courseCode2}");
+                    foreach (var e in CommenStudents)
+                    {
+                        Console.WriteLine(e);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"There are no common students enrolled in {courseCode1} and {courseCode2}.");
+                }
+            }
+            else
+            {
+                Console.WriteLine(" course codes do not exist.");
+            }
+
+        }
+
+
+
     }
+    
 }
